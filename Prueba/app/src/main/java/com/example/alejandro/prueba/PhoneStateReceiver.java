@@ -52,25 +52,25 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
                 while(phoneCursor.moveToNext() && !found){
                     String phoneNumber=phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                    if(phoneNumber.length()>10){
+                    /*if(phoneNumber.length()>10){
                         phoneNumber=phoneNumber.substring(3,phoneNumber.length());
-                    }
+                    }*/
                     if(phoneNumber.compareTo(incomingNumber)==0){
-                        Toast.makeText(context,name,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,name + " "+phoneNumber,Toast.LENGTH_SHORT).show();
                         found=true;
                     }
                 }
 
             }
             if(found==false){
-                Toast.makeText(context,"Desconocido",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"Desconocido "+incomingNumber,Toast.LENGTH_SHORT).show();
 
-                OutputStreamWriter fout=
+                /*OutputStreamWriter fout=
                         new OutputStreamWriter(
                                 context.openFileOutput("prueba_int.txt", Context.MODE_PRIVATE));
 
                 fout.write("Texto de prueba.");
-                fout.close();
+                fout.close();*/
             }
 
 
