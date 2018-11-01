@@ -17,13 +17,13 @@ public class Database {
     }
     public String collectionName()
     {
-        return "Contacts";
+        return "denuncias";
     }
-    public String buildContactsSaveURL()
+    public String buildDenunciasSaveURL()
     {
         return getBaseUrl()+collectionName()+apiKeyUrl();
     }
-    public String buildContactsFetchURL()
+    public String buildDenunciasFetchURL()
     {
         return getBaseUrl()+collectionName()+apiKeyUrl();
     }
