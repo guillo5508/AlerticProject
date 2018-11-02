@@ -16,6 +16,7 @@ public class denuncia {
 	String descripcion;
 	String num_denunciado;
 	
+	//Constructor de toda la vida
 	//Parámetros: cedula, numD, nombreD, fecha, descripcion, numSospechoso
 	public denuncia(String cc_denunciante, String num_denunciante, String nombre_denunciante, String fecha_denuncia,
 			String descripcion, String num_denunciado) {
@@ -29,6 +30,7 @@ public class denuncia {
 		this.num_denunciado = num_denunciado;
 	}
 
+	//Método para guardar Denuncia en db (ej: mi_denuncia.Save();)
 	public void Save() throws IOException {
 	    
 		final String POST_PARAMS = 
@@ -76,7 +78,7 @@ public class denuncia {
 	    }
 	}
 	
-	
+	//Retorna String en formato JSON con todas las denuncias.
 	public static String GetDenuncias() throws IOException {
 		
 		URL urlForGetRequest = new URL("https://api.mlab.com/api/1/databases/alerticdb/collections/denuncias?apiKey=VOTHuAwVOkg3D6nVW3SLuGAIMC-dzUd0");
@@ -98,14 +100,12 @@ public class denuncia {
 	        return response.toString();
 
 	    } else {
-	        System.out.println("GET REQUEST FAILED");
+		    System.out.println("No se pudo realizar la consulta: " + responseCode);
+			return null;
 	    }
-	    System.out.println("No se pudo realizar la consulta: " + responseCode);
-		return null;
-		
 	}
 	
-
+	//Retorna String en formato JSON solo con los números denunciados.
 	public static String GetDenunciados() throws IOException {
 		
 		URL urlForGetRequest = new URL("https://api.mlab.com/api/1/databases/alerticdb/collections/denuncias?f={%22num_denunciado%22:%201}&apiKey=VOTHuAwVOkg3D6nVW3SLuGAIMC-dzUd0");
@@ -134,11 +134,22 @@ public class denuncia {
 		
 	}
 	
-	public static boolean Verify(String number) throws IOException { 
+	//Verifica si *number* ha sido denunciado (dentro de un string *s* en formato Json)
+	public static boolean VerifyString(String s, String number) {
+        if(s.contains("\"num_denunciado\" : "+"\""+number+"\"")) {
+        	System.out.println("CUIDADO!! El número " + number + " es sospechoso");
+        	return true;
+        }else {
+        	return false;
+        }
+	}
+	
+	//Consulta la base de datos si number ha sido denunciado.
+	public static boolean VerifyDB(String number) throws IOException { 
 	    
 		String querypath =
 		"https://api.mlab.com/api/1/databases/alerticdb/collections/denuncias?q={\"num_denunciado\":%20" + "\""+number+"\"}&apiKey=VOTHuAwVOkg3D6nVW3SLuGAIMC-dzUd0";
-		System.out.println(querypath);
+		//System.out.println(querypath);
 		
 		URL urlForGetRequest = new URL(querypath);
 	    String readLine = null;
@@ -148,7 +159,7 @@ public class denuncia {
 	   
 	    int responseCode = conection.getResponseCode();
 	    
-	    if (responseCode == HttpURLConnection.HTTP_OK) {
+	    if (responseCode == HttpURLConnection.HTTP_OK || responseCode==200) {
 	        BufferedReader in = new BufferedReader(
 	            new InputStreamReader(conection.getInputStream()));
 	        StringBuffer response = new StringBuffer();
@@ -157,24 +168,16 @@ public class denuncia {
 	            response.append(readLine);
 	        } in .close();
 	        
-	        System.out.println(response.toString());
-	        //GetAndPost.POSTRequest(response.toString());
-	        //Ver si response contiene el número a verificar
+	        //System.out.println(response.toString());
 	        String temp = response.toString();
-	        if(temp.contains("\"num_denunciado\" : "+"\""+number+"\"")) {
-	        	System.out.println("CUIDADO!! El número " + number + " es sospechoso");
-	        	return true;
-	        }else {
-	        	System.out.println("El número " + number + " NO es sospechoso");
-	        	return false;
-	        }
+	        
+	        return VerifyString(temp,number);
 	        
 	    } else {
-	        System.out.println("GET REQUEST FAILED");
+		    System.out.println("No se pudo realizar la consulta: " + responseCode);
+			return false;
 	    }
-	    System.out.println("No se pudo realizar la consulta: " + responseCode);
-		return false;
-		 	
+
 	}
 	
 	//Un Main común y corriente para probar
@@ -182,14 +185,8 @@ public class denuncia {
 		
 		//cedula, numD, nombreD, fecha, descripcion, numSospechoso
 		
-		denuncia test = new denuncia("cc12344", "300123456", "Denunciante Nombre", "31,enero,2019", "desc", "12345");
-		//Guardar denuncia en DB
-			//test.Save();
-		//Verificar número
-			//System.out.println(Verify("666"));
-		//Traer todas las denuncias de la DB a un String
-			//System.out.println(GetDenuncias());
-		//Traer Solo los números denunciados a un String:
-			System.out.println(GetDenunciados());
+		denuncia test = new denuncia("cc12344", "300123456", "Denunciante Nombre", "31,enero,2019", "desc", "44");
+		System.out.println(GetDenunciados());
+			
 	}
 }
