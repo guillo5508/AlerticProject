@@ -106,6 +106,34 @@ public class denuncia {
 	}
 	
 
+	public static String GetDenunciados() throws IOException {
+		
+		URL urlForGetRequest = new URL("https://api.mlab.com/api/1/databases/alerticdb/collections/denuncias?f={%22num_denunciado%22:%201}&apiKey=VOTHuAwVOkg3D6nVW3SLuGAIMC-dzUd0");
+	    String readLine = null;
+	    HttpURLConnection conection = (HttpURLConnection) urlForGetRequest.openConnection();
+	    conection.setRequestMethod("GET");
+	   
+	    int responseCode = conection.getResponseCode();
+	    
+	    if (responseCode == HttpURLConnection.HTTP_OK) {
+	        BufferedReader in = new BufferedReader(
+	            new InputStreamReader(conection.getInputStream()));
+	        StringBuffer response = new StringBuffer();
+	        
+	        while ((readLine = in .readLine()) != null) {
+	            response.append(readLine);
+	        } in .close();
+	        
+	        return response.toString();
+
+	    } else {
+	        System.out.println("GET REQUEST FAILED");
+	    }
+	    System.out.println("No se pudo realizar la consulta: " + responseCode);
+		return null;
+		
+	}
+	
 	public static boolean Verify(String number) throws IOException { 
 	    
 		String querypath =
@@ -158,8 +186,10 @@ public class denuncia {
 		//Guardar denuncia en DB
 			//test.Save();
 		//Verificar número
-			System.out.println(Verify("666"));
+			//System.out.println(Verify("666"));
 		//Traer todas las denuncias de la DB a un String
-			System.out.println(GetDenuncias());
+			//System.out.println(GetDenuncias());
+		//Traer Solo los números denunciados a un String:
+			System.out.println(GetDenunciados());
 	}
 }
