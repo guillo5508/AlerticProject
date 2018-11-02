@@ -1,5 +1,6 @@
 package com.example.alejandro.pruebamlab;
 
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -14,6 +15,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -44,8 +46,13 @@ public class MainActivity extends AppCompatActivity {
                 //cedula, numD, nombreD, fecha, descripcion, numSospechoso
 
                 denuncia den = new denuncia(cc,num,name,date,des,nums);
+
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+
                 try {
                     den.Save();
+                    //denuncia.GetDenunciados();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
