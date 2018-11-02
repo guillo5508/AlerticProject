@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class denuncia {
@@ -41,7 +42,6 @@ public class denuncia {
 	        "\n}";
 	    
 	    //System.out.println(POST_PARAMS);
-		
 	    URL obj = new URL("https://api.mlab.com/api/1/databases/alerticdb/collections/denuncias?apiKey=VOTHuAwVOkg3D6nVW3SLuGAIMC-dzUd0");
 	    HttpURLConnection postConnection = (HttpURLConnection) obj.openConnection();
 	    postConnection.setRequestMethod("POST");
@@ -76,14 +76,16 @@ public class denuncia {
 	    }
 	}
 	
-	public static boolean Verify(String number) throws IOException { 
-	    
+	
+	public static String GetDenuncias() throws IOException {
+		
 		URL urlForGetRequest = new URL("https://api.mlab.com/api/1/databases/alerticdb/collections/denuncias?apiKey=VOTHuAwVOkg3D6nVW3SLuGAIMC-dzUd0");
 	    String readLine = null;
 	    HttpURLConnection conection = (HttpURLConnection) urlForGetRequest.openConnection();
 	    conection.setRequestMethod("GET");
-	    conection.setRequestProperty("num_denunciado", number); // set userId its a sample here
+	   
 	    int responseCode = conection.getResponseCode();
+	    
 	    if (responseCode == HttpURLConnection.HTTP_OK) {
 	        BufferedReader in = new BufferedReader(
 	            new InputStreamReader(conection.getInputStream()));
@@ -93,8 +95,41 @@ public class denuncia {
 	            response.append(readLine);
 	        } in .close();
 	        
-	        // print result
-	        //System.out.println(response.toString());
+	        return response.toString();
+
+	    } else {
+	        System.out.println("GET REQUEST FAILED");
+	    }
+	    System.out.println("No se pudo realizar la consulta: " + responseCode);
+		return null;
+		
+	}
+	
+
+	public static boolean Verify(String number) throws IOException { 
+	    
+		String querypath =
+		"https://api.mlab.com/api/1/databases/alerticdb/collections/denuncias?q={\"num_denunciado\":%20" + "\""+number+"\"}&apiKey=VOTHuAwVOkg3D6nVW3SLuGAIMC-dzUd0";
+		System.out.println(querypath);
+		
+		URL urlForGetRequest = new URL(querypath);
+	    String readLine = null;
+	    HttpURLConnection conection = (HttpURLConnection) urlForGetRequest.openConnection();
+	    conection.setRequestMethod("GET");
+	    //conection.setRequestProperty("num_denunciado", "\""+number+"\"");
+	   
+	    int responseCode = conection.getResponseCode();
+	    
+	    if (responseCode == HttpURLConnection.HTTP_OK) {
+	        BufferedReader in = new BufferedReader(
+	            new InputStreamReader(conection.getInputStream()));
+	        StringBuffer response = new StringBuffer();
+	        
+	        while ((readLine = in .readLine()) != null) {
+	            response.append(readLine);
+	        } in .close();
+	        
+	        System.out.println(response.toString());
 	        //GetAndPost.POSTRequest(response.toString());
 	        //Ver si response contiene el número a verificar
 	        String temp = response.toString();
@@ -109,17 +144,22 @@ public class denuncia {
 	    } else {
 	        System.out.println("GET REQUEST FAILED");
 	    }
-	    System.out.println("No se pudo realizar la consulta");
+	    System.out.println("No se pudo realizar la consulta: " + responseCode);
 		return false;
 		 	
 	}
 	
 	//Un Main común y corriente para probar
 	public static void main(String[] args) throws IOException {
+		
 		//cedula, numD, nombreD, fecha, descripcion, numSospechoso
 		
 		denuncia test = new denuncia("cc12344", "300123456", "Denunciante Nombre", "31,enero,2019", "desc", "12345");
-		//test.Save();
-		System.out.println(Verify("666"));
+		//Guardar denuncia en DB
+			//test.Save();
+		//Verificar número
+			System.out.println(Verify("666"));
+		//Traer todas las denuncias de la DB a un String
+			System.out.println(GetDenuncias());
 	}
 }
