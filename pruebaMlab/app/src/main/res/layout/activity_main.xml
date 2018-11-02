@@ -26,48 +26,48 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="number"
-            tools:text="cc" />
+            android:hint="Cc."
+            android:inputType="number" />
 
         <EditText
             android:id="@+id/editTextName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="nombre" />
+            android:hint="Nombre"
+            android:inputType="textPersonName" />
 
         <EditText
             android:id="@+id/editTextNum"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="number"
-            android:text="numero" />
+            android:hint="Telefono"
+            android:inputType="number" />
 
         <EditText
             android:id="@+id/editTextDate"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="date"
-            android:text="fecha" />
+            android:hint="Fecha"
+            android:inputType="date" />
 
         <EditText
             android:id="@+id/editTextNumS"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:inputType="number"
-            android:text="n sospechoso" />
+            android:hint="Numero Sospechoso"
+            android:inputType="number" />
 
         <EditText
             android:id="@+id/editTextDes"
             android:layout_width="match_parent"
             android:layout_height="102dp"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="descripcion" />
+            android:hint="Descripcion"
+            android:inputType="textPersonName" />
 
         <Button
             android:id="@+id/button13"
