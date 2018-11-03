@@ -30,7 +30,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
             String incomingNumber = intent.getStringExtra(TelephonyManager.EXTRA_INCOMING_NUMBER);
 
 
-            Toast.makeText(context,incomingNumber,Toast.LENGTH_SHORT).show();
+           // Toast.makeText(context,incomingNumber,Toast.LENGTH_SHORT).show();
 
             /*
             if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)){
@@ -61,8 +61,17 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                     /*if(phoneNumber.length()>10){
                         phoneNumber=phoneNumber.substring(3,phoneNumber.length());
                     }*/
+                    phoneNumber=phoneNumber.replace(" ","");
+                    phoneNumber=phoneNumber.replace("(","");
+                    phoneNumber=phoneNumber.replace(")","");
+                    phoneNumber=phoneNumber.replace("-","");
+                    phoneNumber=phoneNumber.replace("+","");
+
+                    if(phoneNumber.length()>10){
+                        phoneNumber=phoneNumber.substring(phoneNumber.length()-10,phoneNumber.length());
+                    }
                     if(phoneNumber.compareTo(incomingNumber)==0){
-                        Toast.makeText(context,name + " "+phoneNumber,Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,name+" "+phoneNumber,Toast.LENGTH_SHORT).show();
                         found=true;
                     }
                 }
@@ -70,7 +79,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
             }
             if(found==false){
                 Toast.makeText(context,"Desconocido "+incomingNumber,Toast.LENGTH_SHORT).show();
-               
+
             }
 
 
