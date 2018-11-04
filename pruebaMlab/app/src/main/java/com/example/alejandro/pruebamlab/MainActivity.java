@@ -108,6 +108,18 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+        Button b3 =findViewById(R.id.button3);
+        b3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String a=PhoneStateReceiver.ultimoDesconocido;
+                EditText textnums = (EditText) findViewById(R.id.editTextNumS);
+                textnums.setText(a);
+            }
+        });
+
+
+
         Button b1=findViewById(R.id.button13);
         b1.setOnClickListener(new View.OnClickListener() {
             @Override
