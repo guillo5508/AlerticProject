@@ -31,6 +31,7 @@ public class DB {
 	    	"\"num_denunciante\": \""+ d.num_denunciante + "\",\r"+
 	    	"\"nombre_denunciante\": \""+ d.nombre_denunciante + "\",\r"+
 	    	"\"fecha_denuncia\": \""+ d.fecha_denuncia + "\",\r"+
+	    	"\"fecha_incidente\": \""+ d.fecha_incidente + "\",\r"+
 	    	"\"descripcion\": \""+ d.descripcion + "\",\r"+
 	    	"\"num_denunciado\": \""+ d.num_denunciado + "\"\r"+
 	        "\n}";
@@ -131,6 +132,7 @@ public class DB {
         	System.out.println("CUIDADO!! El número " + number + " es sospechoso");
         	return true;
         }else {
+        	System.out.println("El número " + number + " no ha sido reportado");
         	return false;
         }
 	}
