@@ -6,7 +6,9 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -16,6 +18,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.EditText;
 
@@ -148,6 +151,17 @@ public class MainActivity extends AppCompatActivity {
         showDialogOnButtonClick();
 
 
+        TextView tv =findViewById(R.id.textView);
+        tv.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Uri uri = Uri.parse("https://alertic.ml/legal/");
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                startActivity(intent);
+            }
+        });
+
+
 
         Button b3 =findViewById(R.id.button3);
         b3.setOnClickListener(new View.OnClickListener() {
@@ -212,7 +226,7 @@ public class MainActivity extends AppCompatActivity {
                     }
 
 
-                    Toast notificacion = Toast.makeText(MainActivity.this, "Tu denuncia ha sido recibida, gracias por tu contribución", Toast.LENGTH_SHORT);
+                    Toast notificacion = Toast.makeText(MainActivity.this, "Tu denuncia ha sido recibida, gracias por tu contribución", Toast.LENGTH_LONG);
                     notificacion.show();
 
                     textcc.setText("");

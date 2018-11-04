@@ -43,7 +43,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                 StrictMode.setThreadPolicy(policy);
 
                 if(DB.verifyDB(incomingNumber)){
-                    Toast.makeText(context,"¡Cuidado!, Este número ha sido reportado como sospechoso",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,"¡Cuidado!, Este número ha sido reportado como sospechoso",Toast.LENGTH_LONG).show();
                 }
 
                 ContentResolver resolver=context.getContentResolver();
@@ -73,7 +73,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                             phoneNumber=phoneNumber.substring(phoneNumber.length()-10,phoneNumber.length());
                         }
                         if(phoneNumber.compareTo(incomingNumber)==0){
-                            Toast.makeText(context,name+" "+phoneNumber,Toast.LENGTH_SHORT).show();
+                            //Toast.makeText(context,name+" "+phoneNumber,Toast.LENGTH_SHORT).show();
                             found=true;
                             lastCall=true;
                         }
@@ -88,11 +88,11 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
             }
             if ((state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK))){
-                Toast.makeText(context,"In call",Toast.LENGTH_SHORT).show();
+               // Toast.makeText(context,"In call",Toast.LENGTH_LONG).show();
             }
             if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)){
                 if(lastCall==false){
-                    Toast.makeText(context,"¿Notaste algo sospechoso? repórtalo en Alertic.",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,"¿Notaste algo sospechoso? repórtalo en Alertic.",Toast.LENGTH_LONG).show();
                 }
                 //Toast.makeText(context,"Cal ended",Toast.LENGTH_SHORT).show();
             }
