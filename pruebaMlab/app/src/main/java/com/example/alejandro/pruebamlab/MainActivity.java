@@ -1,15 +1,18 @@
 package com.example.alejandro.pruebamlab;
 
 import android.Manifest;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -28,12 +31,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.EditText;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Calendar;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 import static com.example.alejandro.pruebamlab.DB.getDenunciados;
+import static com.example.alejandro.pruebamlab.DB.localSync;
 import static com.example.alejandro.pruebamlab.DB.localpath;
 
 public class MainActivity extends AppCompatActivity {
@@ -41,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     Button btn;
     int year_x,month_x,day_x;
     static final int DIALOG_ID=0;
+    public static final String localpath = "prueba.txt";
+
 
     public void showToast(String msg,int imagen,int color){
         LayoutInflater inflater = getLayoutInflater();
@@ -148,22 +161,52 @@ public class MainActivity extends AppCompatActivity {
         alert.show();
     }
 
+
+    public void recurrentLocalSync() throws IOException {
+
+
+        String temp = DB.getDenunciados();
+
+        File path = getApplicationContext().getFilesDir();
+        File file = new File(path, localpath);
+        ;
+        FileOutputStream stream = new FileOutputStream(file);
+        try {
+            stream.write(temp.getBytes());
+        } finally {
+            stream.close();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        /*if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+        final Context context=this;
+        // Create the Handler object (on the main thread by default)
+        final Handler handler = new Handler();
+        // Define the code block to be executed
+        Runnable runnableCode = new Runnable() {
+            @Override
+            public void run() {
+                //Toast.makeText(MainActivity.this, "Its been 2 seconds", Toast.LENGTH_SHORT).show();
+                try{
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+                    recurrentLocalSync();
+                }catch (IOException e){
+                    e.printStackTrace();
+                }
 
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_CONTACTS}, MY_PERMISSIONS_REQUEST_READ_CONTACTS);
+                handler.postDelayed(this, 1000*10);
+            }
+        };
+        // Start the initial runnable task by posting through the handler
+        handler.post(runnableCode);
 
-        }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_PHONE_STATE}, REQUEST_PERMISSION_PHONE_STATE);
-
-        }*/
 
         int PERMISSION_ALL = 1;
         String[] PERMISSIONS = {
