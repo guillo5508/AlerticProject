@@ -32,16 +32,19 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
            // Toast.makeText(context,incomingNumber,Toast.LENGTH_SHORT).show();
 
-            /*
+
             if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)){
                 Toast.makeText(context,"Ringing State Number is -"+incomingNumber,Toast.LENGTH_SHORT).show();
+                
+
+
             }
             if ((state.equals(TelephonyManager.EXTRA_STATE_OFFHOOK))){
                 Toast.makeText(context,"Received State",Toast.LENGTH_SHORT).show();
             }
             if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)){
                 Toast.makeText(context,"Idle State",Toast.LENGTH_SHORT).show();
-            }*/
+            }
 
 
             ContentResolver resolver=context.getContentResolver();

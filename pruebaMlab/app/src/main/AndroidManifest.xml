@@ -19,6 +19,7 @@
             </intent-filter>
         </activity>
 
+
         <receiver
             android:name=".PhoneStateReceiver"
             android:enabled="true"
