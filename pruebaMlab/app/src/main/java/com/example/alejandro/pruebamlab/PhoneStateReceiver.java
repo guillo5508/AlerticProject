@@ -3,6 +3,8 @@ package com.example.alejandro.pruebamlab;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.KeyguardManager;
+import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -12,19 +14,25 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.CountDownTimer;
+import android.os.PowerManager;
 import android.os.StrictMode;
 import android.provider.ContactsContract;
+import android.support.v4.app.NotificationCompat;
 import android.telephony.TelephonyManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.OutputStreamWriter;
+import java.nio.channels.Channel;
 import java.util.zip.Inflater;
 
 import static java.security.AccessController.getContext;
@@ -36,6 +44,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
     static boolean lastCall;
 
     public void showToast(String msg,int imagen,int color,Context context,int colortext){
+        //LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LayoutInflater inflater = LayoutInflater.from(context);
         View layout = inflater.inflate(R.layout.toast_layout, null);
         //View layout = inflater.inflate(R.layout.toast_layout,(ViewGroup)findViewById(R.id.toast_root));
@@ -59,6 +68,19 @@ public class PhoneStateReceiver extends BroadcastReceiver {
         toast.show();
     }
 
+    private Notification getDefaultNotification(Notification.Builder builder) {
+        builder
+                .setSmallIcon(R.drawable.ic_alertic)
+                .setTicker("Optional ticker")
+                .setWhen(System.currentTimeMillis())
+                .setContentTitle("Default notification")
+                .setContentText("Lorem ipsum dolor sit amet, consectetur adipiscing elit.")
+                .setContentInfo("Info");
+
+        //return builder.build(); //A partir de Jelly Bean se usa éste método-
+        return builder.getNotification();
+    }
+
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -75,25 +97,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
             if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)){
                 //Toast.makeText(context,"Ringing State Number is -"+incomingNumber,Toast.LENGTH_SHORT).show();
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
-                boolean isreported=false;
 
-                if(DB.isConnected(context)){
-                    isreported=DB.verifyLocal(incomingNumber,context);
-                    if(!isreported){
-                        isreported=DB.verifyDB(incomingNumber,context);
-                        DB.localSync(context);
-                    }
-
-                }else{
-                    isreported=DB.verifyLocal(incomingNumber,context);
-                }
-
-                if(isreported){
-                    //Toast.makeText(context,"¡Cuidado!, Este número ha sido reportado como sospechoso",Toast.LENGTH_LONG).show();
-                    showToast("¡Cuidado!, Este número ha sido reportado como sospechoso",R.drawable.ic_warning, Color.rgb(219,29,29),context,Color.WHITE);
-                }
 
                 ContentResolver resolver=context.getContentResolver();
                 Cursor cursor=resolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
@@ -133,6 +137,40 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                     //Toast.makeText(context,"Desconocido "+incomingNumber,Toast.LENGTH_SHORT).show();
                     ultimoDesconocido=incomingNumber;
                     lastCall=false;
+
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+                    boolean isreported=false;
+
+                    if(DB.isConnected(context)){
+                        isreported=DB.verifyLocal(incomingNumber,context);
+                        if(!isreported){
+                            isreported=DB.verifyDB(incomingNumber,context);
+                            DB.localSync(context);
+                        }
+
+                    }else{
+                        isreported=DB.verifyLocal(incomingNumber,context);
+                    }
+
+                    if(isreported){
+                        //Toast.makeText(context,"¡Cuidado!, Este número ha sido reportado como sospechoso",Toast.LENGTH_LONG).show();
+                       /*KeyguardManager myKM = (KeyguardManager) context.getSystemService(Context.KEYGUARD_SERVICE);
+                        if( myKM.inKeyguardRestrictedInputMode()) {
+                            Notification.Builder builder = new Notification.Builder(context);
+                            getDefaultNotification(builder);
+                            builder.getNotification();
+
+                            showToast("¡Cuidado!, Este número ha sido reportado como sospechoso",R.drawable.ic_warning, Color.rgb(219,29,29),context,Color.WHITE);
+                        }else{
+                            showToast("¡Cuidado!, Este número ha sido reportado como sospechoso",R.drawable.ic_warning, Color.rgb(219,29,29),context,Color.WHITE);
+                        }*/
+                        for (int i=0; i < 2; i++) {
+                            showToast("¡Cuidado!, Este número ha sido reportado como sospechoso",R.drawable.ic_warning, Color.rgb(219,29,29),context,Color.WHITE);
+                        }
+                        //showToast("¡Cuidado!, Este número ha sido reportado como sospechoso",R.drawable.ic_warning, Color.rgb(219,29,29),context,Color.WHITE);
+
+                    }
                 }
 
             }
