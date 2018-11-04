@@ -1,9 +1,11 @@
 package com.example.alejandro.pruebamlab;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
@@ -56,8 +58,35 @@ public class MainActivity extends AppCompatActivity {
             day_x=dayOfMonth;
             //Toast.makeText(MainActivity.this,year_x + "/" + month_x + "/" + day_x,Toast.LENGTH_LONG).show();
             String fecha=year_x + "/" + month_x + "/" + day_x;
-            EditText textdate = (EditText) findViewById(R.id.editTextDate);
-            textdate.setText(fecha);
+
+
+            Calendar cal1=Calendar.getInstance();
+            int year_x1=cal1.get(Calendar.YEAR);
+            int month_x1=cal1.get(Calendar.MONTH);
+            month_x1=month_x1 +1;
+            int day_x1=cal1.get(Calendar.DAY_OF_MONTH);
+
+            if(year_x>year_x1)
+                mostrarAlerta("Ingrese una fecha valida","Ok");
+            else if(year_x1==year_x){
+                if(month_x>month_x1)
+                    mostrarAlerta("Ingrese una fecha valida","Ok");
+                else if(month_x==month_x1){
+                    if(day_x>day_x1)
+                        mostrarAlerta("Ingrese una fecha valida","Ok");
+                    else{
+                        EditText textdate = (EditText) findViewById(R.id.editTextDate);
+                        textdate.setText(fecha);
+                    }
+                }else{
+                    EditText textdate = (EditText) findViewById(R.id.editTextDate);
+                    textdate.setText(fecha);
+                }
+            }else{
+                EditText textdate = (EditText) findViewById(R.id.editTextDate);
+                textdate.setText(fecha);
+            }
+
         }
     };
 
@@ -70,6 +99,18 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         return true;
+    }
+    public void mostrarAlerta(String title,String msg){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setMessage(title)
+                .setCancelable(false)
+                .setPositiveButton(msg, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        //do things
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
     }
 
     @Override
@@ -125,41 +166,65 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+
                 EditText textcc = (EditText) findViewById(R.id.editTextCc);
-                String cc=textcc.getText().toString();
+                String cc = textcc.getText().toString();
 
                 EditText textname = (EditText) findViewById(R.id.editTextName);
-                String name=textname.getText().toString();
+                String name = textname.getText().toString();
 
                 EditText textnum = (EditText) findViewById(R.id.editTextNum);
-                String num=textnum.getText().toString();
+                String num = textnum.getText().toString();
 
                 EditText textdate = (EditText) findViewById(R.id.editTextDate);
-                String date=textdate.getText().toString();
+                String date = textdate.getText().toString();
 
                 EditText textnums = (EditText) findViewById(R.id.editTextNumS);
-                String nums=textnums.getText().toString();
+                String nums = textnums.getText().toString();
 
                 EditText textdes = (EditText) findViewById(R.id.editTextDes);
-                String des=textdes.getText().toString();
+                String des = textdes.getText().toString();
 
-                //cedula, numD, nombreD, fecha, descripcion, numSospechoso
+                if (cc.compareTo("") == 0 || name.compareTo("") == 0 || num.compareTo("") == 0 || date.compareTo("") == 0
+                        || nums.compareTo("") == 0 || des.compareTo("") == 0){
+                    mostrarAlerta("Faltan campos por llenar","Ok");
+                }else{
+                    //cedula, numD, nombreD, fecha, descripcion, numSospechoso
 
-                denuncia den = new denuncia(cc,num,name,date,des,nums);
+                    Calendar cal1=Calendar.getInstance();
+                    int year_x1=cal1.get(Calendar.YEAR);
+                    int month_x1=cal1.get(Calendar.MONTH);
+                    month_x1=month_x1 +1;
+                    int day_x1=cal1.get(Calendar.DAY_OF_MONTH);
+                    String fecha1=year_x1 + "/" + month_x1 + "/" + day_x1;
 
-                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
-                StrictMode.setThreadPolicy(policy);
+                    denuncia den = new denuncia(cc,num,name,fecha1,date,des,nums);
 
-                try {
-                    den.Save();
-                    //denuncia.GetDenunciados();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                    StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                    StrictMode.setThreadPolicy(policy);
+
+                    try {
+                        DB db=new DB();
+                        db.save(den);
+                        //denuncia.GetDenunciados();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+
+                    Toast notificacion = Toast.makeText(MainActivity.this, "Tu denuncia ha sido recibida, gracias por tu contribución", Toast.LENGTH_SHORT);
+                    notificacion.show();
+
+                    textcc.setText("");
+                    textname.setText("");
+                    textnum.setText("");
+                    textdate.setText("");
+                    textnums.setText("");
+                    textdes.setText("");
                 }
 
 
-                Toast notificacion = Toast.makeText(MainActivity.this, "Reportado", Toast.LENGTH_SHORT);
-                notificacion.show();
+
             }
         });
 

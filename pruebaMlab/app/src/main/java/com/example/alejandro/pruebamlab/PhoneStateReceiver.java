@@ -9,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.os.StrictMode;
 import android.provider.ContactsContract;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
@@ -21,6 +22,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
     public static String ultimoDesconocido="";
 
+    static boolean lastCall;
     @Override
     public void onReceive(Context context, Intent intent) {
 
@@ -36,7 +38,13 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
 
             if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)){
-                Toast.makeText(context,"Ringing State Number is -"+incomingNumber,Toast.LENGTH_SHORT).show();
+                //Toast.makeText(context,"Ringing State Number is -"+incomingNumber,Toast.LENGTH_SHORT).show();
+                StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+                StrictMode.setThreadPolicy(policy);
+
+                if(DB.verifyDB(incomingNumber)){
+                    Toast.makeText(context,"¡Cuidado!, Este número ha sido reportado como sospechoso",Toast.LENGTH_SHORT).show();
+                }
 
                 ContentResolver resolver=context.getContentResolver();
                 Cursor cursor=resolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
@@ -67,13 +75,15 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                         if(phoneNumber.compareTo(incomingNumber)==0){
                             Toast.makeText(context,name+" "+phoneNumber,Toast.LENGTH_SHORT).show();
                             found=true;
+                            lastCall=true;
                         }
                     }
 
                 }
                 if(found==false){
-                    Toast.makeText(context,"Desconocido "+incomingNumber,Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"Desconocido "+incomingNumber,Toast.LENGTH_SHORT).show();
                     ultimoDesconocido=incomingNumber;
+                    lastCall=false;
                 }
 
             }
@@ -81,7 +91,10 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                 Toast.makeText(context,"In call",Toast.LENGTH_SHORT).show();
             }
             if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)){
-                Toast.makeText(context,"Cal ended",Toast.LENGTH_SHORT).show();
+                if(lastCall==false){
+                    Toast.makeText(context,"¿Notaste algo sospechoso? repórtalo en Alertic.",Toast.LENGTH_SHORT).show();
+                }
+                //Toast.makeText(context,"Cal ended",Toast.LENGTH_SHORT).show();
             }
 
 
