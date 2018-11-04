@@ -7,12 +7,13 @@ public class denuncia {
 	String num_denunciante;
 	String nombre_denunciante;
 	String fecha_denuncia;
+	String fecha_incidente;
 	String descripcion;
 	String num_denunciado;
 	
 	//Constructor de toda la vida
 	//Parámetros: cedula, numD, nombreD, fecha, descripcion, numSospechoso
-	public denuncia(String cc_denunciante, String num_denunciante, String nombre_denunciante, String fecha_denuncia,
+	public denuncia(String cc_denunciante, String num_denunciante, String nombre_denunciante, String fecha_denuncia, String fecha_incidente,
 			String descripcion, String num_denunciado) {
 		
 		super();
@@ -20,6 +21,7 @@ public class denuncia {
 		this.num_denunciante = num_denunciante;
 		this.nombre_denunciante = nombre_denunciante;
 		this.fecha_denuncia = fecha_denuncia;
+		this.fecha_incidente = fecha_incidente;
 		this.descripcion = descripcion;
 		this.num_denunciado = num_denunciado;
 	}
@@ -29,10 +31,11 @@ public class denuncia {
 		
 		//cedula, numD, nombreD, fecha, descripcion, numSospechoso
 		
-		denuncia test = new denuncia("cc12344", "300123456", "Denunciante Nombre", "31,enero,2019", "desc", "112");
-		DB.save(test);
+		denuncia test = new denuncia("cc12344", "300123456", "Denunciante Nombre", "31,enero,2019","31,enero,2019", "desc", "112");
+		//DB.save(test);
 		DB.localSync();
-		DB.verifyDB("112");
+		System.out.println(DB.getDenuncias());
+		DB.verifyDB("000");
 		DB.verifyLocal("112");
 	}
 }
