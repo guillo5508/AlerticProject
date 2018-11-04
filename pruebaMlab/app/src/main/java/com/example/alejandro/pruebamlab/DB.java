@@ -2,7 +2,14 @@ package com.example.alejandro.pruebamlab;
 
 import android.app.Activity;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -21,7 +28,7 @@ import java.nio.file.Paths;
 
 public class DB extends Activity {
 
-	Context context=this;
+
 	public static final String key = "VOTHuAwVOkg3D6nVW3SLuGAIMC-dzUd0";
 	public static final String db = "alerticdb";
 	public static final String collection = "denuncias";
@@ -29,12 +36,9 @@ public class DB extends Activity {
 	//ruta donde guardamos el fichero con los números denunciados:
 	public static final String localpath = "prueba.txt";
 
-	public DB () {
-
-	}
 
 	//Método para guardar Denuncia en db (ej: mi_denuncia.Save();)
-	public void save(denuncia d) throws IOException {
+	public static void save(denuncia d,Context context) throws IOException {
 	    
 		final String POST_PARAMS = 
 	    	"{\n" +
@@ -75,7 +79,7 @@ public class DB extends Activity {
 	            response.append(inputLine);
 	        } in .close();
 	        
-	        //localSync();
+	        localSync(context);
 	    } else {
 	        System.out.println("POST NOT WORKED: "+responseCode);
 	    }
@@ -138,18 +142,20 @@ public class DB extends Activity {
 	}
 	
 	//Verifica si *number* ha sido denunciado (dentro de un string *s* en formato Json)
-	public static boolean verifyString(String s, String number) {
+	public static boolean verifyString(String s, String number,Context context) {
         if(s.contains("\"num_denunciado\" : "+"\""+number+"\"")) {
-        	System.out.println("CUIDADO!! El número " + number + " es sospechoso");
+        	//System.out.println("CUIDADO!! El número " + number + " es sospechoso");
+            //Toast.makeText(context,"CUIDADO!! El número " + number + " es sospechoso",Toast.LENGTH_LONG);
         	return true;
         }else {
-        	System.out.println("El número " + number + " no ha sido reportado");
+        	//System.out.println("El número " + number + " no ha sido reportado");
+            //Toast.makeText(context,"El número " + number + " no ha sido reportado",Toast.LENGTH_LONG);
         	return false;
         }
 	}
 	
 	//Consulta la base de datos si number ha sido denunciado.
-	public static boolean verifyDB(String number) throws IOException { 
+	public static boolean verifyDB(String number, Context context) throws IOException {
 	    
 		String querypath =
 		"https://api.mlab.com/api/1/databases/"+db+"/collections/"+collection+"?q={\"num_denunciado\":%20" + "\""+number+"\"}&apiKey=VOTHuAwVOkg3D6nVW3SLuGAIMC-dzUd0";
@@ -175,7 +181,7 @@ public class DB extends Activity {
 	        //System.out.println(response.toString());
 	        String temp = response.toString();
 	        
-	        return verifyString(temp,number);
+	        return verifyString(temp,number,context);
 	        
 	    } else {
 		    System.out.println("No se pudo realizar la consulta: " + responseCode);
@@ -187,7 +193,7 @@ public class DB extends Activity {
 
 	//Manejo de ficheros
 
-	public void localSync() throws IOException {
+	public static void localSync(Context context) throws IOException {
 
 
 		String temp = getDenunciados();
@@ -203,7 +209,7 @@ public class DB extends Activity {
 		}
 	}
 
-	public String fileToString() throws IOException {
+	public static String fileToString(Context context) throws IOException {
 
 		File path = context.getFilesDir();
 		File file = new File(path, localpath);
@@ -222,7 +228,19 @@ public class DB extends Activity {
 	}
 	
 	//Consulta en el fichero si number ha sido denunciado.
-	public boolean verifyLocal(String number) throws IOException {
-		return verifyString(fileToString(),number);
+	public static boolean verifyLocal(String number,Context context) throws IOException {
+		return verifyString(fileToString(context),number,context);
 	}
+
+	public static boolean isConnected(Context context){
+		ConnectivityManager cm =
+				(ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+		NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+		boolean isConnected = activeNetwork != null &&
+				activeNetwork.isConnectedOrConnecting();
+		return isConnected;
+	}
+
+
 }

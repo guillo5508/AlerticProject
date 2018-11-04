@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.StrictMode;
 import android.support.v4.app.ActivityCompat;
@@ -15,15 +16,25 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.EditText;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Calendar;
+
+import static com.example.alejandro.pruebamlab.DB.getDenunciados;
+import static com.example.alejandro.pruebamlab.DB.localpath;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -31,6 +42,27 @@ public class MainActivity extends AppCompatActivity {
     int year_x,month_x,day_x;
     static final int DIALOG_ID=0;
 
+    public void showToast(String msg,int imagen,int color){
+        LayoutInflater inflater = getLayoutInflater();
+        View layout = inflater.inflate(R.layout.toast_layout,(ViewGroup)findViewById(R.id.toast_root));
+
+        LinearLayout l=layout.findViewById(R.id.toast_root);
+        //color= Color.el_color_que_quiera
+        l.setBackgroundColor(color);
+
+        TextView toastText=layout.findViewById(R.id.toast_text);
+        ImageView toastImage=layout.findViewById(R.id.toast_image);
+
+        toastText.setText(msg);
+        //imagen debe ser R.drawable.nombre_del_icono
+        toastImage.setImageResource(imagen);
+
+        Toast toast = new Toast(getApplicationContext());
+        toast.setGravity(Gravity.CENTER,0,0);
+        toast.setDuration(Toast.LENGTH_LONG);
+        toast.setView(layout);
+        toast.show();
+    }
 
 
     public void showDialogOnButtonClick(){
@@ -170,6 +202,7 @@ public class MainActivity extends AppCompatActivity {
                 String a=PhoneStateReceiver.ultimoDesconocido;
                 EditText textnums = (EditText) findViewById(R.id.editTextNumS);
                 textnums.setText(a);
+                //showToast("hola soy un error",R.drawable.ic_toasticon,Color.argb(255,255,0,0));
             }
         });
 
@@ -218,23 +251,31 @@ public class MainActivity extends AppCompatActivity {
                     StrictMode.setThreadPolicy(policy);
 
                     try {
-                        DB db=new DB();
-                        db.save(den);
-                        //denuncia.GetDenunciados();
+                        //DB db=new DB();
+                        if(DB.isConnected(getApplicationContext())){
+                            DB.save(den,getApplicationContext());
+
+                            //Toast.makeText(MainActivity.this, "Tu denuncia ha sido recibida, gracias por tu contribución", Toast.LENGTH_LONG).show();
+                            showToast("Tu denuncia ha sido recibida, gracias por tu contribución",R.drawable.ic_done,Color.rgb(113,194,58));
+
+                            textcc.setText("");
+                            textname.setText("");
+                            textnum.setText("");
+                            textdate.setText("");
+                            textnums.setText("");
+                            textdes.setText("");
+                        }else{
+                            //Toast.makeText(MainActivity.this, "No pudimos recibir tu reporte, verifica tu conexión a internet e inténtalo de nuevo", Toast.LENGTH_LONG).show();
+                            showToast("No pudimos recibir tu reporte, verifica tu conexión a internet e inténtalo de nuevo",R.drawable.ic_desconnection,Color.rgb(219,29,29));
+                        }
+
+
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
 
 
-                    Toast notificacion = Toast.makeText(MainActivity.this, "Tu denuncia ha sido recibida, gracias por tu contribución", Toast.LENGTH_LONG);
-                    notificacion.show();
 
-                    textcc.setText("");
-                    textname.setText("");
-                    textnum.setText("");
-                    textdate.setText("");
-                    textnums.setText("");
-                    textdes.setText("");
                 }
 
 

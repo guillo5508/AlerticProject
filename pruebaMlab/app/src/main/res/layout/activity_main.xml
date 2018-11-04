@@ -26,7 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Cc."
+            android:hint="Cédula"
             android:inputType="number" />
 
         <EditText
@@ -42,7 +42,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Telefono"
+            android:hint="Teléfono"
             android:inputType="number" />
 
         <EditText
@@ -65,21 +65,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:hint="Numero Sospechoso"
+            android:hint="Número sospechoso"
             android:inputType="number" />
 
         <Button
             android:id="@+id/button3"
             android:layout_width="145dp"
             android:layout_height="wrap_content"
-            android:text="Ultimo número" />
+            android:text="Último número" />
 
         <EditText
             android:id="@+id/editTextDes"
             android:layout_width="match_parent"
             android:layout_height="102dp"
             android:ems="10"
-            android:hint="Descripcion"
+            android:hint="Descripción"
             android:inputType="textPersonName" />
 
         <Button
@@ -93,7 +93,9 @@
             android:id="@+id/textView"
             android:layout_width="323dp"
             android:layout_height="54dp"
-            android:text='Al usar la aplicación se aceptan los "Terminos y condiciones"' />
+            android:text='Al usar la aplicación se aceptan los "Terminos y condiciones"'
+            android:textColor="#ff944d"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
