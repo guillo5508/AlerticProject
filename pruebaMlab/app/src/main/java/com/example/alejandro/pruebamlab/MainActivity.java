@@ -203,7 +203,7 @@ public class MainActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                handler.postDelayed(this, 1000*10);
+                handler.postDelayed(this, 1000*60*5);
             }
         };
         // Start the initial runnable task by posting through the handler

@@ -165,9 +165,9 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                         }else{
                             showToast("¡Cuidado!, Este número ha sido reportado como sospechoso",R.drawable.ic_warning, Color.rgb(219,29,29),context,Color.WHITE);
                         }*/
-                        for (int i=0; i < 2; i++) {
-                            showToast("¡Cuidado!, Este número ha sido reportado como sospechoso",R.drawable.ic_warning, Color.rgb(219,29,29),context,Color.WHITE);
-                        }
+
+                        showToast("¡Cuidado!, Este número ha sido reportado como sospechoso",R.drawable.ic_warning, Color.rgb(219,29,29),context,Color.WHITE);
+
                         //showToast("¡Cuidado!, Este número ha sido reportado como sospechoso",R.drawable.ic_warning, Color.rgb(219,29,29),context,Color.WHITE);
 
                     }
