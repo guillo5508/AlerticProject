@@ -42,6 +42,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
     public static String ultimoDesconocido="";
 
     static boolean lastCall;
+    static boolean yoEstoyLlamando=true;
 
     public void showToast(String msg,int imagen,int color,Context context,int colortext){
         //LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -97,7 +98,7 @@ public class PhoneStateReceiver extends BroadcastReceiver {
 
             if(state.equals(TelephonyManager.EXTRA_STATE_RINGING)){
                 //Toast.makeText(context,"Ringing State Number is -"+incomingNumber,Toast.LENGTH_SHORT).show();
-
+                yoEstoyLlamando=false;
 
                 ContentResolver resolver=context.getContentResolver();
                 Cursor cursor=resolver.query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
@@ -178,15 +179,13 @@ public class PhoneStateReceiver extends BroadcastReceiver {
                // Toast.makeText(context,"In call",Toast.LENGTH_LONG).show();
             }
             if (state.equals(TelephonyManager.EXTRA_STATE_IDLE)){
-                if(lastCall==false){
+                if(lastCall==false && !yoEstoyLlamando){
+                    yoEstoyLlamando=true;
                     showToast("¿Notaste algo sospechoso? repórtalo en Alertic.",R.drawable.ic_alertic, Color.rgb(232,232,232),context,Color.BLACK);
                     //Toast.makeText(context,"¿Notaste algo sospechoso? repórtalo en Alertic.",Toast.LENGTH_LONG).show();
                 }
                 //Toast.makeText(context,"Cal ended",Toast.LENGTH_SHORT).show();
             }
-
-
-
 
 
 
